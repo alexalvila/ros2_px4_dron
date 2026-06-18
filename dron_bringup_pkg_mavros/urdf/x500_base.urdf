@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="x500_base">
+
+  <material name="dark_gray">
+    <color rgba="0.15 0.15 0.15 1.0"/>
+  </material>
+
+  <material name="blue">
+    <color rgba="0.0 0.25 0.9 1.0"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="green">
+    <color rgba="0.0 0.8 0.2 1.0"/>
+  </material>
+
+  <link name="base_link">
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.02166666666666667" ixy="0" ixz="0"
+        iyy="0.02166666666666667" iyz="0"
+        izz="0.04000000000000001"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.35 0.35 0.05"/>
+      </geometry>
+      <material name="dark_gray"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.35 0.35 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="rotor_0">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <link name="rotor_1">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <link name="rotor_2">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <link name="rotor_3">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.04"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <link name="lidar_2d">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.025"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+
+  <joint name="rotor_0_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rotor_0"/>
+    <origin xyz="0.174 -0.174 0.06" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="rotor_1_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rotor_1"/>
+    <origin xyz="-0.174 0.174 0.06" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="rotor_2_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rotor_2"/>
+    <origin xyz="0.174 0.174 0.06" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="rotor_3_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rotor_3"/>
+    <origin xyz="-0.174 -0.174 0.06" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.12 0 0.08" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_2d"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+  </joint>
+
+</robot>
