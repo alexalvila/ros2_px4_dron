@@ -1,0 +1,64 @@
+keyboard_node:
+  ros__parameters:
+    publish_hz: 30.0
+
+    linear_speed: 0.75       
+    vertical_speed: 0.35     
+
+    boost_linear_speed: 1.25
+    boost_vertical_speed: 0.60
+
+    key_timeout_s: 0.20
+
+    linear_incremental: 1.0
+    vertical_incremental: 1.0
+    yaw_incremental: 1.0
+
+manual_control_node:
+  ros__parameters:
+    loop_hz: 30.0
+
+    takeoff_altitude_m: 2.0
+    takeoff_acceptance_m: 0.25
+
+    require_safety_enable: true
+    auto_arm_on_takeoff: false
+
+    max_xy_speed: 1.5       
+    max_z_speed: 1.0    
+
+    yaw_step: 0.1          
+
+    max_xy_accel: 0.9
+    max_z_accel: 0.45
+
+    max_xy_decel: 1.8
+    max_z_decel: 1.0
+
+    manual_deadman_timeout_s: 0.30
+
+    offboard_warmup_cycles: 30
+    auto_arm_delay_cycles: 10
+
+telemetry_node:
+  ros__parameters:
+    publish_hz: 5.0
+
+manual_safety_node:
+  ros__parameters:
+    publish_hz: 10.0
+    min_battery_remaining: 0.25
+    block_if_failsafe: true
+    block_if_landed: false
+
+tf_odometry_node:
+  ros__parameters:
+    odom_topic: "/fmu/out/vehicle_odometry"
+    odom_msg_topic: "/odom"
+
+    map_frame: "map"
+    odom_frame: "odom"
+    base_frame: "base_link"
+
+    publish_map_to_odom: true
+    publish_odom_msg: true
