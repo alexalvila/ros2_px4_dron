@@ -1,0 +1,115 @@
+# ============================================================
+#  dron_bringup_pkg_mavros – parámetros de operación
+# ============================================================
+#
+#  Nodos configurados:
+#    keyboard_node_mavros
+#    manual_control_node_mavros
+#    manual_safety_node_mavros
+#    telemetry_node_mavros
+#    tf_odometry_node_mavros
+#
+
+# ── Nodo de teclado ──────────────────────────────────────────
+keyboard_node_mavros:
+  ros__parameters:
+    publish_hz: 30.0            # Frecuencia de publicación de cmd_vel (Hz)
+    linear_speed: 0.75          # Velocidad lateral/frontal base (m/s)
+    vertical_speed: 0.35        # Velocidad vertical base (m/s)
+    key_timeout_s: 0.20         # Tiempo de expiración de tecla de movimiento (s)
+    linear_incremental: 1.0     # Multiplicador inicial de velocidad lineal
+    vertical_incremental: 1.0   # Multiplicador inicial de velocidad vertical
+    yaw_incremental: 1.0        # Multiplicador inicial de yaw
+
+# ── Nodo de control central ──────────────────────────────────
+manual_control_node_mavros:
+  ros__parameters:
+    loop_hz: 30.0
+
+    # ── Backend de control ─────────────────────────────────────
+    # "manual_mavlink"    : joystick MAVLink → PX4 STABILIZED / ALTCTL
+    #                       No requiere GPS/VIO. Piloto tiene control de actitud.
+    # "offboard_velocity" : setpoints de velocidad → PX4 OFFBOARD
+    #                       Requiere estimación de posición válida (GPS o VIO).
+    control_backend: "manual_mavlink"
+
+    # Modo PX4 para el backend manual_mavlink
+    # "STABILIZED" : estabiliza actitud, throttle directo (sin altitud automática)
+    # "ALTCTL"     : estabiliza actitud + mantiene altitud (requiere barómetro)
+    manual_mode: "STABILIZED"
+
+    # Pedir el modo manual automáticamente al arrancar
+    auto_set_manual_mode_on_start: true
+
+    # ── Despegue en modo Offboard ──────────────────────────────
+    takeoff_altitude_m: 2.0     # Altura objetivo de despegue (m)
+    takeoff_acceptance_m: 0.25  # Tolerancia para considerar altura alcanzada (m)
+
+    # ── Safety ─────────────────────────────────────────────────
+    # false: operar sin necesitar /manual/safety_enable (desarrollo/test)
+    # true : requiere que manual_safety_node confirme OK para armar/despegar
+    require_safety_enable: false
+
+    # Armar automáticamente cuando PX4 confirma OFFBOARD (solo offboard)
+    auto_arm_on_takeoff: false
+
+    # ── Límites de velocidad ───────────────────────────────────
+    max_xy_speed: 1.0           # Velocidad horizontal máxima (m/s)
+    max_z_speed: 0.5            # Velocidad vertical máxima (m/s)
+    max_yaw_rate: 0.6           # Tasa de yaw máxima (rad/s)
+
+    # ── Suavizado (slew limiter) ───────────────────────────────
+    max_xy_accel: 0.6           # Aceleración horizontal máxima (m/s²)
+    max_z_accel: 0.35           # Aceleración vertical máxima (m/s²)
+    max_yaw_accel: 1.0          # Aceleración angular máxima (rad/s²)
+    max_xy_decel: 1.2           # Deceleración horizontal máxima (m/s²)
+    max_z_decel: 0.8            # Deceleración vertical máxima (m/s²)
+    max_yaw_decel: 1.5          # Deceleración angular máxima (rad/s²)
+
+    # ── Temporización ─────────────────────────────────────────
+    # Tiempo sin comandos de teclado para forzar cero (deadman switch)
+    manual_deadman_timeout_s: 0.30
+    # Ciclos de setpoint cero antes de pedir modo OFFBOARD (evita rechazo de PX4)
+    offboard_warmup_cycles: 30
+    # Ciclos de espera tras OFFBOARD confirmado antes de auto-armar
+    auto_arm_delay_cycles: 10
+
+    # ── MAVLink MANUAL_CONTROL (backend manual_mavlink) ────────
+    # El topic /mavros/manual_control/send espera ejes en [-1000, 1000]
+    # y throttle en [0, 1000].
+    manual_throttle_initial: 0.0   # Throttle inicial al arrancar
+    manual_throttle_rate: 0.35     # Velocidad de integración del throttle (unidades/s)
+    manual_throttle_min: 0.0       # Límite inferior del throttle
+    manual_throttle_max: 1.0       # Límite superior del throttle
+    manual_axis_scale: 1000.0      # Escala de ejes: 1.0 normalizado → 1000 MAVLink
+
+# ── Nodo de safety (watchdog) ────────────────────────────────
+manual_safety_node_mavros:
+  ros__parameters:
+    publish_hz: 10.0
+    # Fracción mínima de batería aceptable (0.20 = 20%)
+    min_battery_remaining: 0.20
+    # Bloquear operación si el vehículo está en tierra
+    block_if_landed: false
+    # Requerir que MAVROS esté conectado a la FCU
+    require_mavros_connected: true
+
+# ── Nodo de telemetría ────────────────────────────────────────
+telemetry_node_mavros:
+  ros__parameters:
+    publish_hz: 5.0   # Frecuencia de publicación de /manual/telemetry_state (Hz)
+
+# ── Nodo de TF/odometría ─────────────────────────────────────
+tf_odometry_node_mavros:
+  ros__parameters:
+    odom_topic: "/mavros/local_position/odom"
+    odom_msg_topic: "/odom"
+    map_frame: "map"
+    odom_frame: "odom"
+    base_frame: "base_link"
+    publish_map_to_odom: true
+    publish_odom_msg: true
+    publish_identity_until_odom: true
+    use_msg_timestamp: false
+    zero_initial_pose: true     # Resetear posición inicial a origen
+    base_z_offset: 0.0          # Offset vertical del marco base_link (m)
